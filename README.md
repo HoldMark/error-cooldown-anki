@@ -32,7 +32,7 @@ Edit the addon config via **Tools → Add-ons → error_cooldown → Config**.
 }
 ```
 
-# License
+### License
 
 This project is dual-licensed:
 
