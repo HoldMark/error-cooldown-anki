@@ -1,7 +1,7 @@
 """
-error_freeze — Anki addon that temporarily freezes rating buttons
+error_cooldown — Anki addon that temporarily blocks rating buttons
 when the user types a wrong answer on a {{type:FieldName}} card.
-After the freeze expires, the user picks the rating themselves.
+After the cooldown expires, the user picks the rating themselves.
 """
 import anki.buildinfo
 
@@ -42,32 +42,11 @@ _is_frozen = False       # True while the freeze timer is running
 _penalty_served = False  # True after the freeze has ended, until the next card
 
 
-def _disable_buttons(reviewer) -> None:
-    # Visually disable all ease buttons via JS
-    reviewer.bottom.web.eval(
-        "document.querySelectorAll('.ease').forEach(b => {"
-        "  b.disabled = true;"
-        "  b.style.opacity = '0.4';"
-        "});"
-    )
-
-
-def _enable_buttons(reviewer) -> None:
-    # Re-enable all ease buttons via JS
-    reviewer.bottom.web.eval(
-        "document.querySelectorAll('.ease').forEach(b => {"
-        "  b.disabled = false;"
-        "  b.style.opacity = '1';"
-        "});"
-    )
-
-
 def on_will_answer_card(handled, reviewer, card):  # noqa
     """Hook: fires before Anki records the user's rating.
 
-    Intercepts wrong-answer submissions on typing cards and starts a freeze:
-    buttons are disabled for FREEZE_MS ms, then re-enabled so the user can
-    pick a rating themselves.
+    Intercepts wrong-answer submissions on typing cards and starts a cooldown:
+    button clicks are blocked for FREEZE_MS ms, then the user can pick a rating.
     """
     global _is_frozen, _penalty_served
 
@@ -80,11 +59,11 @@ def on_will_answer_card(handled, reviewer, card):  # noqa
     if not _is_supported_version():
         return handled
 
-    # Penalty already served — let the rating through without a new freeze
+    # Penalty already served — let the rating through without a new cooldown
     if _penalty_served:
         return handled
 
-    # Freeze in progress — block repeated clicks
+    # Cooldown in progress — block repeated clicks
     if _is_frozen:
         return False, ease
 
@@ -103,18 +82,15 @@ def on_will_answer_card(handled, reviewer, card):  # noqa
     correct = reviewer.typeCorrect.strip()
 
     if typed.lower() == correct.lower() or ease == 1:
-        return handled  # correct answer or Again — no freeze
+        return handled  # correct answer or Again — no cooldown
 
-    # Wrong answer — disable buttons for FREEZE_MS ms, then wait for user to re-rate
+    # Wrong answer — block button clicks for FREEZE_MS ms, then wait for user to re-rate
     _is_frozen = True
-    _disable_buttons(reviewer)
 
     def resume() -> None:
-        # Unfreeze after the timer fires and allow the user to pick a rating
         global _is_frozen, _penalty_served
         _is_frozen = False
         _penalty_served = True
-        _enable_buttons(reviewer)
 
     QTimer.singleShot(FREEZE_MS, resume)
     return False, ease
