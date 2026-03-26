@@ -1,4 +1,4 @@
-# error_cooldown
+# Error Cooldown
 
 An Anki addon that temporarily freezes the rating buttons when you type a **wrong answer** on a `{{type:FieldName}}` card. After the freeze expires you pick the rating yourself — so you can't accidentally click through without thinking.
 
