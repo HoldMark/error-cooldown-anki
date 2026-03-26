@@ -31,3 +31,37 @@ Edit the addon config via **Tools → Add-ons → error_cooldown → Config**.
     "required_versions": ["25.09.2", "25.10.0"]
 }
 ```
+
+# License
+
+This project is dual-licensed:
+
+| Use case | License | Cost |
+|---|---|---|
+| Open-source project | [GPL v3](LICENSE) | Free |
+| Personal / educational use | [GPL v3](LICENSE) | Free |
+| Closed-source / commercial product | [Commercial](LICENSE-COMMERCIAL.md) | Contact author |
+
+---
+
+### Open Source
+
+Free to use under the [GNU GPL v3](LICENSE) — but you must
+open-source your own code too.
+
+### Commercial
+
+If you use this in a proprietary or closed-source product,
+you need a commercial license.
+
+Contact: **prodius.mark@gmail.com**
+GitHub: [@HoldMark](https://github.com/HoldMark)
+
+---
+
+By contributing to this project, you agree to the [CLA](CLA.md).
+
+---
+
+Copyright (C) 2026 HoldMark (MarkelloFx2) <prodius.mark@gmail.com>
+
